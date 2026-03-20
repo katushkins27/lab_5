@@ -1,0 +1,381 @@
+@startuml
+left to right direction
+
+package data {
+    
+    class Ticket {
+        - int id
+        - String name
+        - Coordinates coordinates
+        - LocalDateTime creationDate
+        - Long price
+        - TicketType type
+        - Venue venue
+
+        + Ticket(...)
+        + setId(int) void
+        + setName(String) void
+        + setCoordinates(Coordinates) void
+        + setCreationDate(LocalDateTime) void
+        + setPrice(Long) void
+        + setType(TicketType) void
+        + setVenue(Venue) void
+        + getID() int
+        + getName() String
+        + getCoordinates() Coordinates
+        + getCreationDate() LocalDateTime
+        + getPrice() Long
+        + getType() TicketType
+        + getVenue() Venue
+    }
+    
+    class Coordinates {
+        - int x
+        - Long y
+
+        + Coordinates(int, Long)
+        + setX(int) void
+        + setY(Long) void
+        + getX() int
+        + getY() Long
+    }
+    
+    class Venue {
+        - long id
+        - String name
+        - int capacity
+        - Address address
+
+        + Venue(long, String, int, Address)
+        + setId(long) void
+        + setName(String) void
+        + setCapacity(int) void
+        + setAddress(Address) void
+        + getId() long
+        + getName() String
+        + getCapacity() int
+        + getAddress() Address
+    }
+    
+    class Address {
+        - String street
+        - String zipCode
+        - Location town
+
+        + Address(String, String, Location)
+        + setStreet(String) void
+        + setZipCode(String) void
+        + setTown(Location) void
+        + getStreet() String
+        + getZipCode() String
+        + getTown() Location
+    }
+    
+    class Location {
+        - double x
+        - Long y
+        - Float z
+        - String name
+
+        + Location(double, Long, Float, String)
+        + setX(double) void
+        + setY(Long) void
+        + setZ(Float) void
+        + setName(String) void
+        + getX() double
+        + getY() Long
+        + getZ() Float
+        + getName() String
+    }
+    
+    enum TicketType {
+        VIP
+        USUAL
+        BUDGETARY
+        CHEAP
+
+        - String description
+        + AllDescriptions() String
+    }
+}
+
+package collection {
+    
+    class TicketCollection {
+        - ArrayDeque<Ticket> collection
+        - LocalDateTime initializationDate
+
+        + TicketCollection()
+        + TicketCollection(ArrayDeque<Ticket>)
+        + sortCollection() void
+        + head() Ticket
+        + addElement(Ticket) void
+        + update(int, Ticket) boolean
+        + removeById(int) boolean
+        + clearCollection() void
+        + getFirst() Ticket
+        + removeHead() void
+        + removeAllGreater(Ticket) int
+        + removeAllByPrice(Long) int
+        + removeAnyByType(TicketType) boolean
+        + getMinByVenue() Ticket
+        + getInfo() String
+        + showAll() String
+        + getCollection() ArrayDeque<Ticket>
+    }
+}
+
+package commands {
+    
+    abstract class AbstractCommand {
+        # TicketCollection collection
+        # String arg
+        --
+        + setContext(TicketCollection, String) void
+        + {abstract} execute() void
+        + {abstract} getDescription() String
+        + {abstract} getName() String
+        + validateArg() boolean
+        + getUsage() String
+    }
+    
+    class ManagerOfCommands {
+        - Map<String, AbstractCommand> commands
+        - TicketCollection collection
+        - String filename
+        - Set<String> scriptFiles
+
+        + ManagerOfCommands(TicketCollection, String)
+        + addOneCommand(Command) void
+        + addAllCommands() void
+        + executeCommand(String, String) boolean
+        + getCommandMap() Map
+        + getCollection() TicketCollection
+        + getScriptFiles() Set
+    }
+    
+    class HelpCommand {
+        - ManagerOfCommands manager
+
+        + HelpCommand(ManagerOfCommands)
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+    
+    class AddCommand {
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+    
+    class ShowCommand {
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+    
+    class UpdateCommand {
+        + execute() void
+        + valArgs() boolean
+        + findTicketById(int) Ticket
+        + getDescription() String
+        + getName() String
+        + getUsage() String
+    }
+    
+    class RemoveByIdCommand {
+        + execute() void
+        + valArgs() boolean
+        + getDescription() String
+        + findTicketById(int) Ticket
+        + getName() String
+        + getUsage() String
+    }
+    
+    class ClearCommand {
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+    
+    class SaveCommand {
+        - String filename
+
+        + SaveCommand(String)
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+    
+    class ExecuteScriptCommand {
+        - ManagerOfCommands manager
+
+        + ExecuteScriptCommand(ManagerOfCommands)
+        + execute() void
+        + valArgs() boolean
+        + getDescription() String
+        + getName() String
+        + getUsage() String
+    }
+    
+    class ExitCommand {
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+    
+    class HeadCommand {
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+    
+    class RemoveHeadCommand {
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+    
+    class RemoveGreaterCommand {
+        + getUsage() String
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+    
+    class RemoveAllByPriceCommand {
+        + execute() void
+        + valArgs() boolean
+        + findTicketById(int) Ticket
+        + getDescription() String
+        + getName() String
+        + getUsage() String
+    }
+    
+    class RemoveAnyByTypeCommand {
+        + execute() void
+        + valArgs() boolean
+        + findTicketById(int) Ticket
+        + getDescription() String
+        + getName() String
+        + getUsage() String
+    }
+    
+    class MinByVenueCommand {
+        + execute() void
+        + getDescription() String
+        + getName() String
+    }
+
+    class InfoCommand {
+            + execute() void
+            + getDescription() String
+            + getName() String
+    }
+}
+
+package util {
+    
+    class InputReader {
+        - Scanner scanner
+        - boolean scriptRegime
+        - Scanner scriptScanner
+        - int scriptLineNumber
+        - String nextLine
+        - boolean hasPeeked
+
+        + setScriptRegime(Scanner) void
+        + setInteractiveRegime() void
+        + isScriptRegime() boolean
+        + commandFlag(String) boolean
+        + readLine() String
+        + peekNextLine() String
+        + readNextCommand() String
+        + readStr(String) String
+        + readInt(String) int
+        + readDouble(String) double
+        + readLongNotNull(String) Long
+        + readFloatNotNull(String) Float
+        + readNotEmptyStr(String) String
+        + readStreet(String) String
+        + readLocationName(String) String
+        + readPrice(String) Long
+        + readTicketType() TicketType
+        + readCoordinates() Coordinates
+        + readLocation() Location
+        + isNumber(String) boolean
+        + readYN(String) boolean
+        + readAddress() Address
+        + readVenue() Venue
+        + readTicket() Ticket
+        + readTicket(String) Ticket
+    }
+    
+    class Parser {
+        - DateTimeFormatter DATE_FORMATTER
+
+        + parseFile(String) ArrayDeque<Ticket>
+        + parseOneLine(String) Ticket
+        + saveTicketToCSV(Ticket) StringBuilder
+        + saveFileToCSV(ArrayDeque<Ticket>, String) void
+    }
+    
+    class CreateID {
+        - Set<Integer> ticketIds
+        - Set<Long> venueIds
+
+        + createTicketID() int
+        + createVenueID() long
+        + removeTicketID(int) void
+        + removeVenueID(long) void
+        + addTicketID(int) void
+        + addVenueID(long) void
+        + clearAllIDs() void
+    }
+}
+
+package main {
+    
+    class Main {
+        + main(String[]) void
+        - loadCollection(String) TicketCollection
+        - runInteractiveMode(ManagerOfCommands) void
+        - runFallbackMode(ManagerOfCommands) void
+    }
+}
+
+data.Ticket -- data.Coordinates
+data.Ticket -- data.TicketType
+data.Ticket -- data.Venue
+data.Venue -- data.Address
+data.Address -- data.Location
+
+commands.AbstractCommand <|-- commands.HelpCommand
+commands.AbstractCommand <|-- commands.AddCommand
+commands.AbstractCommand <|-- commands.ShowCommand
+commands.AbstractCommand <|-- commands.UpdateCommand
+commands.AbstractCommand <|-- commands.RemoveByIdCommand
+commands.AbstractCommand <|-- commands.ClearCommand
+commands.AbstractCommand <|-- commands.SaveCommand
+commands.AbstractCommand <|-- commands.ExecuteScriptCommand
+commands.AbstractCommand <|-- commands.ExitCommand
+commands.AbstractCommand <|-- commands.HeadCommand
+commands.AbstractCommand <|-- commands.RemoveHeadCommand
+commands.AbstractCommand <|-- commands.RemoveGreaterCommand
+commands.AbstractCommand <|-- commands.RemoveAllByPriceCommand
+commands.AbstractCommand <|-- commands.RemoveAnyByTypeCommand
+commands.AbstractCommand <|-- commands.MinByVenueCommand
+commands.AbstractCommand <|-- commands.InfoCommand
+
+commands.ManagerOfCommands -- commands.AbstractCommand
+commands.ManagerOfCommands -- collection.TicketCollection
+
+main.Main ..> collection.TicketCollection
+main.Main ..> commands.ManagerOfCommands
+main.Main ..> util.Parser
+main.Main ..> util.InputReader
+main.Main ..> util.CreateID
+
+@enduml
+```
