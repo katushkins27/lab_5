@@ -350,6 +350,8 @@ data.Ticket -- data.TicketType
 data.Ticket -- data.Venue
 data.Venue -- data.Address
 data.Address -- data.Location
+data.Ticket ..> util.CreateID
+util.InputReader ..> data.Ticket
 
 commands.AbstractCommand <|-- commands.HelpCommand
 commands.AbstractCommand <|-- commands.AddCommand
@@ -368,8 +370,11 @@ commands.AbstractCommand <|-- commands.RemoveAnyByTypeCommand
 commands.AbstractCommand <|-- commands.MinByVenueCommand
 commands.AbstractCommand <|-- commands.InfoCommand
 
-commands.ManagerOfCommands -- commands.AbstractCommand
-commands.ManagerOfCommands -- collection.TicketCollection
+commands.ManagerOfCommands o-- commands.AbstractCommand
+commands.ManagerOfCommands *-- collection.TicketCollection
+TicketCollection *-- Ticket
+Parser ..> Ticket
+Parser ..> CreateID
 
 main.Main ..> collection.TicketCollection
 main.Main ..> commands.ManagerOfCommands
